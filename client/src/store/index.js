@@ -31,17 +31,15 @@ const tps = new jsTPS();
 function getCookie(name) {
   let doc = document.cookie;
   let prefix = name + "=";
-  console.log("prefix=" + prefix);
   let begin = doc.indexOf("; " + prefix);
-  console.log("begin=" + begin);
-  if (begin == -1) {
+  if (begin === -1) {
     begin = doc.indexOf(prefix);
-    if (begin != 0) return null;
+    if (begin !== 0) return null;
   } else {
     begin += 2;
     var end = document.cookie.indexOf(";", begin);
     console.log("end=" + end);
-    if (end == -1) {
+    if (end === -1) {
       end = doc.length;
     }
   }
@@ -227,7 +225,7 @@ export const useGlobalStore = () => {
       if (response.data.success) {
         _id = response.data.top5List._id;
       }
-      document.cookie = "newListCounter" + store.newListCounter;
+      document.cookie = "newListCounter=" + store.newListCounter;
     }
     asyncCreateNewList()
       .then(() => {
@@ -242,13 +240,10 @@ export const useGlobalStore = () => {
     async function asynShowDeleteList() {
       let id = document.getElementById("delete-modal");
       id.classList.add("is-visible");
-
       storeReducer({
         type: GlobalStoreActionType.DELETE_LIST,
-        payload: idNamePair
+        payload: idNamePair,
       });
-
-
     }
     asynShowDeleteList();
   };
@@ -263,9 +258,27 @@ export const useGlobalStore = () => {
   // DELETE LIST
   store.deleteMarkedList = function () {
     async function asynDeleteList() {
-      const response = await api.deleteTop5ListById(store.currentList._id);
+      try {
+        console.log(
+          "id=" +
+            store.listMarkedForDeletion._id +
+            ", name=" +
+            store.listMarkedForDeletion.name
+        );
+        const response = await api.deleteTop5ListById(
+          store.listMarkedForDeletion._id
+        );
+        if (!response.data.success) {
+          throw new Error();
+        }
+      } catch (ex) {
+        console.log(ex);
+      }
     }
-    asynDeleteList();
+    asynDeleteList().then(() => {
+      store.hideDeleteListModal();
+      store.loadIdNamePairs();
+    });
   };
 
   // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
@@ -279,15 +292,23 @@ export const useGlobalStore = () => {
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = function () {
     async function asyncLoadIdNamePairs() {
-      const response = await api.getTop5ListPairs();
-      if (response.data.success) {
-        let pairsArray = response.data.idNamePairs;
+      try {
+        const response = await api.getTop5ListPairs();
+        if (response.data.success) {
+          let pairsArray = response.data.idNamePairs;
+          storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: pairsArray,
+          });
+        } else {
+          console.log("API FAILED TO GET THE LIST PAIRS");
+        }
+      } catch (ex) {
+        console.log(ex);
         storeReducer({
           type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-          payload: pairsArray,
+          payload: []
         });
-      } else {
-        console.log("API FAILED TO GET THE LIST PAIRS");
       }
     }
     asyncLoadIdNamePairs();
@@ -403,7 +424,6 @@ export const useGlobalStore = () => {
     let oldText = list.items[index];
     store.addRenameItemTransaction(store, list, index, oldText, newText);
   };
-
   // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
   return { store, storeReducer };
 };
