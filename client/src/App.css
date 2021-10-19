@@ -264,6 +264,7 @@ input {
 .modal.is-visible {
   visibility: visible;
   opacity: 1;
+  
 }
 
 .modal-dialog {

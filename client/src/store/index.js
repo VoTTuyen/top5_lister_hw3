@@ -22,6 +22,7 @@ export const GlobalStoreActionType = {
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
   SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
   SET_ITEM_NAME_EDIT_ACTIVE: "SET_ITEM_NAME_EDIT_ACTIVE",
+  DELETE_LIST: "DELETE_LIST",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -78,7 +79,7 @@ export const useGlobalStore = () => {
   const storeReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-      // LIST UPDATE OF LITS NAME
+      // LIST UPDATE OF LISTS NAME
       case GlobalStoreActionType.CHANGE_LIST_NAME: {
         return setStore({
           idNamePairs: payload.idNamePairs,
@@ -87,6 +88,20 @@ export const useGlobalStore = () => {
           isListNameEditActive: false,
           isItemNameEditActive: false,
           listMarkedForDeletion: null,
+          undoButtonOn: false,
+          redoButtonOn: false,
+          closeButtonOn: false,
+        });
+      }
+      // DELETE LIST
+      case GlobalStoreActionType.DELETE_LIST: {
+        return setStore({
+          idNamePairs: store.idNamePairs,
+          currentList: store.top5List,
+          newListCounter: store.newListCounter,
+          isListNameEditActive: false,
+          isItemNameEditActive: false,
+          listMarkedForDeletion: payload,
           undoButtonOn: false,
           redoButtonOn: false,
           closeButtonOn: false,
@@ -222,6 +237,36 @@ export const useGlobalStore = () => {
         store.setCurrentList(_id);
       });
   };
+  // SHOW DELETE DIALOG
+  store.showDeleteListModal = function (idNamePair) {
+    async function asynShowDeleteList() {
+      let id = document.getElementById("delete-modal");
+      id.classList.add("is-visible");
+
+      storeReducer({
+        type: GlobalStoreActionType.DELETE_LIST,
+        payload: idNamePair
+      });
+
+
+    }
+    asynShowDeleteList();
+  };
+  // HIDE DELETE DIALOG
+  store.hideDeleteListModal = function () {
+    async function asynHIdeDeleteList() {
+      let id = document.getElementById("delete-modal");
+      id.classList.remove("is-visible");
+    }
+    asynHIdeDeleteList();
+  };
+  // DELETE LIST
+  store.deleteMarkedList = function () {
+    async function asynDeleteList() {
+      const response = await api.deleteTop5ListById(store.currentList._id);
+    }
+    asynDeleteList();
+  };
 
   // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
   store.closeCurrentList = function () {
@@ -331,15 +376,27 @@ export const useGlobalStore = () => {
     });
   };
   // ADD RENAME ITEM
-  store.addRenameItemTransaction = function (store, list, index, oldText, newText) {
-    let transaction = new RenameItem_Transaction(store, list, index, oldText, newText);
+  store.addRenameItemTransaction = function (
+    store,
+    list,
+    index,
+    oldText,
+    newText
+  ) {
+    let transaction = new RenameItem_Transaction(
+      store,
+      list,
+      index,
+      oldText,
+      newText
+    );
     tps.addTransaction(transaction);
-  }
+  };
   // RENAME ITEM
   store.renameItem = function (list, index, newText) {
     list.items[index] = newText;
     store.updateCurrentList();
-  }
+  };
 
   store.startRenameItemName = function (index, newText) {
     let list = store.currentList;

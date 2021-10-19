@@ -12,8 +12,8 @@ import { GlobalStoreContext } from '../store'
 function DeleteModal() {
     const { store } = useContext(GlobalStoreContext);
     let name = "";
-    if (store.currentList) {
-        name = store.currentList.name;
+    if (store.listMarkedForDeletion) {
+        name = store.listMarkedForDeletion.name;
     }
     function handleDeleteList(event) {
         store.deleteMarkedList();
@@ -22,28 +22,29 @@ function DeleteModal() {
         store.hideDeleteListModal();
     }
     return (
-        <div
-            className="modal"
-            id="delete-modal"
-            data-animation="slideInOutLeft">
-            <div className="modal-dialog">
-                <header className="dialog-header">
-                    Delete the {name} Top 5 List?
-                </header>
-                <div id="confirm-cancel-container">
-                    <button
-                        id="dialog-yes-button"
-                        className="modal-button"
-                        onClick={handleDeleteList}
-                    >Confirm</button>
-                    <button
-                        id="dialog-no-button"
-                        className="modal-button"
-                        onClick={handleCloseModal}
-                    >Cancel</button>
-                </div>
-            </div>
+      <div className="modal" id="delete-modal" data-animation="slideInOutLeft">
+        <div className="modal-dialog">
+          <header className="dialog-header">
+            Delete the Top 5 {name} List?
+          </header>
+          <div id="confirm-cancel-container">
+            <button
+              id="dialog-yes-button"
+              className="modal-button"
+              onClick={handleDeleteList}
+            >
+              Confirm
+            </button>
+            <button
+              id="dialog-no-button"
+              className="modal-button"
+              onClick={handleCloseModal}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
+      </div>
     );
 }
 

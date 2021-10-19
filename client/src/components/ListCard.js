@@ -25,11 +25,11 @@ function ListCard(props) {
             store.setCurrentList(_id);
         }
     }
-    // function handleDeleteList(event) {
-    //     event.stopPropagation();
-    //     props.deleteList(props.idNamePair);
+    function handleDeleteList(event) {
+        event.stopPropagation();
+        store.showDeleteListModal(idNamePair);
         
-    // }
+    }
 
 
     function handleToggleEdit(event) {
@@ -86,7 +86,7 @@ function ListCard(props) {
           type="button"
           id={"delete-list-" + idNamePair._id}
           className="list-card-button"
-        //   onClick={handleDeleteList}
+          onClick={handleDeleteList}
           value={"\u2715"}
         />
         <input
