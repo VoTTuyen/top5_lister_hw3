@@ -10,9 +10,9 @@ import jsTPS_Transaction from "../common/jsTPS.js"
  * @author Tuyen Vo
  */
 export default class RenameItem_Transaction extends jsTPS_Transaction {
-    constructor(initRenameItem, initList, initIndex, initOldText, initNewText) {
+    constructor(initStore, initList, initIndex, initOldText, initNewText) {
         super();
-        this.renameItem = initRenameItem;
+        this.store = initStore;
         this.list = initList
         this.index = initIndex;
         this.oldText = initOldText;
@@ -20,10 +20,10 @@ export default class RenameItem_Transaction extends jsTPS_Transaction {
     }
 
     doTransaction() {
-        this.renameItem(this.list, this.index, this.newText);
+        this.store.renameItem(this.list, this.index, this.newText);
     }
     
     undoTransaction() {
-        this.renameItem(this.list, this.index, this.oldText);
+        this.store.renameItem(this.list, this.index, this.oldText);
     }
 }
