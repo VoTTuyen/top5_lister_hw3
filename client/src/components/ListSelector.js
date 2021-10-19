@@ -26,6 +26,10 @@ const ListSelector = () => {
             />
         ))
     }
+    function addList(event) {
+        store.createNewList();
+        console.log("Add list")
+    };
     return (
         <div id="top5-list-selector">
             <div id="list-selector-heading">
@@ -33,6 +37,7 @@ const ListSelector = () => {
                     type="button"
                     id="add-list-button"
                     className="top5-button"
+                    onClick={addList}
                     value="+" />
                 Your Lists
             </div>
@@ -40,7 +45,10 @@ const ListSelector = () => {
                 {
                     listCard
                 }
-                <DeleteModal />
+                <DeleteModal
+
+                    
+                />
             </div>
         </div>)
 }

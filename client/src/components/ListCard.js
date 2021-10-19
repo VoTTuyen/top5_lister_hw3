@@ -25,6 +25,12 @@ function ListCard(props) {
             store.setCurrentList(_id);
         }
     }
+    // function handleDeleteList(event) {
+    //     event.stopPropagation();
+    //     props.deleteList(props.idNamePair);
+        
+    // }
+
 
     function handleToggleEdit(event) {
         event.stopPropagation();
@@ -36,7 +42,7 @@ function ListCard(props) {
         if (newActive) {
             store.setIsListNameEditActive();
         }
-        setEditActive(newActive);
+      setEditActive(newActive);
     }
 
     function handleKeyPress(event) {
@@ -59,34 +65,40 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
-    let cardElement =
-        <div
-            id={idNamePair._id}
-            key={idNamePair._id}
-            onClick={handleLoadList}
-            className={'list-card ' + selectClass}>
-            <span
-                id={"list-card-text-" + idNamePair._id}
-                key={"span-" + idNamePair._id}
-                className="list-card-text">
-                {idNamePair.name}
-            </span>
-            <input
-                disabled={cardStatus}
-                type="button"
-                id={"delete-list-" + idNamePair._id}
-                className="list-card-button"
-                value={"\u2715"}
-            />
-            <input
-                disabled={cardStatus}
-                type="button"
-                id={"edit-list-" + idNamePair._id}
-                className="list-card-button"
-                onClick={handleToggleEdit}
-                value={"\u270E"}
-            />
-        </div>;
+  
+
+    let cardElement = (
+      <div
+        id={idNamePair._id}
+        key={idNamePair._id}
+        onClick={handleLoadList}
+        className={"list-card " + selectClass}
+      >
+        <span
+          id={"list-card-text-" + idNamePair._id}
+          key={"span-" + idNamePair._id}
+          className="list-card-text"
+        >
+          {idNamePair.name}
+        </span>
+        <input
+          disabled={cardStatus}
+          type="button"
+          id={"delete-list-" + idNamePair._id}
+          className="list-card-button"
+        //   onClick={handleDeleteList}
+          value={"\u2715"}
+        />
+        <input
+          disabled={cardStatus}
+          type="button"
+          id={"edit-list-" + idNamePair._id}
+          className="list-card-button"
+          onClick={handleToggleEdit}
+          value={"\u270E"}
+        />
+      </div>
+    );
 
     if (editActive) {
         cardElement =
