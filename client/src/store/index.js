@@ -212,7 +212,7 @@ export const useGlobalStore = () => {
       if (response.data.success) {
         _id = response.data.top5List._id;
       }
-      document.cookie = "newListCounter=" + store.newListCounter;
+      document.cookie = "newListCounter" + store.newListCounter;
     }
     asyncCreateNewList()
       .then(() => {
@@ -330,19 +330,18 @@ export const useGlobalStore = () => {
       payload: null,
     });
   };
-
+  // ADD RENAME ITEM
   store.addRenameItemTransaction = function (store, list, index, oldText, newText) {
     let transaction = new RenameItem_Transaction(store, list, index, oldText, newText);
     tps.addTransaction(transaction);
   }
-
+  // RENAME ITEM
   store.renameItem = function (list, index, newText) {
     list.items[index] = newText;
     store.updateCurrentList();
   }
 
-  // RENAME ITEM
-  store.changeItemName = function (index, newText) {
+  store.startRenameItemName = function (index, newText) {
     let list = store.currentList;
     let oldText = list.items[index];
     store.addRenameItemTransaction(store, list, index, oldText, newText);

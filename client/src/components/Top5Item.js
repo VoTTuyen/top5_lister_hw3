@@ -67,7 +67,7 @@ function Top5Item(props) {
       if (newText === '') {
         newText = event.target.value
       }
-      store.changeItemName(index, newText);
+      store.startRenameItemName(index, newText);
       toggleEdit();
     }
   }
