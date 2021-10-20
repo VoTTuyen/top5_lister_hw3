@@ -38,7 +38,6 @@ function getCookie(name) {
   } else {
     begin += 2;
     var end = document.cookie.indexOf(";", begin);
-    console.log("end=" + end);
     if (end === -1) {
       end = doc.length;
     }
@@ -107,6 +106,7 @@ export const useGlobalStore = () => {
       }
       // STOP EDITING THE CURRENT LIST
       case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
+        tps.clearAllTransactions();
         return setStore({
           idNamePairs: store.idNamePairs,
           currentList: null,
@@ -142,9 +142,9 @@ export const useGlobalStore = () => {
           isListNameEditActive: false,
           isItemNameEditActive: false,
           listMarkedForDeletion: null,
-          undoButtonOn: false,
-          redoButtonOn: false,
-          closeButtonOn: false,
+          undoButtonOn: tps.hasTransactionToUndo(),
+          redoButtonOn: tps.hasTransactionToRedo(),
+          closeButtonOn: true,
         });
       }
       // START EDITING A LIST NAME
@@ -307,7 +307,7 @@ export const useGlobalStore = () => {
         console.log(ex);
         storeReducer({
           type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-          payload: []
+          payload: [],
         });
       }
     }
@@ -376,10 +376,10 @@ export const useGlobalStore = () => {
     asyncUpdateCurrentList();
   };
   store.undo = function () {
-    tps.undoTransaction();
+      tps.undoTransaction();
   };
   store.redo = function () {
-    tps.doTransaction();
+      tps.doTransaction();
   };
 
   // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME

@@ -16,13 +16,15 @@ function ListCard(props) {
   const { idNamePair, selected } = props;
 
   function handleLoadList(event) {
-    if (!event.target.disabled) {
-      let _id = event.target.id;
-      if (_id.indexOf("list-card-text-") >= 0)
-        _id = ("" + _id).substring("list-card-text-".length);
+    if (!store.isListNameEditActive) {
+      if (!event.target.disabled) {
+        let _id = event.target.id;
+        if (_id.indexOf("list-card-text-") >= 0)
+          _id = ("" + _id).substring("list-card-text-".length);
 
-      // CHANGE THE CURRENT LIST
-      store.setCurrentList(_id);
+        // CHANGE THE CURRENT LIST
+        store.setCurrentList(_id);
+      }
     }
   }
   function handleDeleteList(event) {
@@ -44,10 +46,15 @@ function ListCard(props) {
   }
 
   function handleKeyPress(event) {
-    if (event.code === "Enter" || text === '') {
+    if (event.code === "Enter") {
       let id = event.target.id.substring("list-".length);
       let text = event.target.value;
-      store.changeListName(id, text);
+
+      if (text !== '') {
+          store.changeListName(id, text);
+      } else {
+          store.changeListName(id, event.target.value)
+      }
       toggleEdit();
     }
   }
@@ -55,6 +62,7 @@ function ListCard(props) {
   function handleUpdateText(event) {
     setText(event.target.value);
   }
+  let enabledButtonClass = "top5-button";
 
   let selectClass = "unselected-list-card";
   if (selected) {

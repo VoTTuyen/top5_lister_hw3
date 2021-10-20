@@ -27,16 +27,24 @@ const ListSelector = () => {
         ))
     }
     function addList(event) {
-        store.createNewList();
-        console.log("Add list")
+        if (!store.isListNameEditActive) {
+            store.createNewList();
+        }
     };
+
+    let buttonAddClass = 'top5-button'
+    if (store.isListNameEditActive) {
+        buttonAddClass = 'top5-button-disabled'
+    }
+
     return (
         <div id="top5-list-selector">
             <div id="list-selector-heading">
                 <input
+                    disabled={store.isListNameEditActive}
                     type="button"
                     id="add-list-button"
-                    className="top5-button"
+                    className={buttonAddClass}
                     onClick={addList}
                     value="+" />
                 Your Lists

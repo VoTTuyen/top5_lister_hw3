@@ -75,17 +75,19 @@ function Top5Item(props) {
   function handleUpdateText(event) {
     setText(event.target.value);
   }
+  let enabledButtonClass = "top5-button";
 
   let itemClass = "top5-item";
   if (draggedTo) {
     itemClass = "top5-item-dragged-to";
+    enabledButtonClass = true;
   }
   let itemStatus = false;
   if (store.isItemNameEditActive) {
     itemStatus = true;
   }
 
-  let itemElement = (
+  let itemElement =
     <div
       id={"item-" + (index + 1)}
       className={itemClass}
@@ -94,6 +96,7 @@ function Top5Item(props) {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      draggable={true}
     >
       <input
         disabled={itemStatus}
@@ -104,7 +107,31 @@ function Top5Item(props) {
       />
       {props.text}
     </div>
-  );
+  
+
+  if (store.isItemNameEditActive) {
+    itemElement = (
+      <div
+        id={"item-" + (index + 1)}
+        className={itemClass}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <input
+          disabled={itemStatus}
+          type="button"
+          id={"item-" + (index + 1)}
+          onClick={handleToggleEdit}
+          value={"\u270E"}
+        />
+        {props.text}
+      </div>
+    );
+  }
+
   if (editActive) {
     itemElement = (
       <input
